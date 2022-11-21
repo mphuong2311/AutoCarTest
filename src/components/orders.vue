@@ -23,13 +23,11 @@
       </b-select>
       <b-button @click="handleCreateOrder">Create order</b-button>
     </section>
-    <br>
+    <br />
     <b-checkbox v-model="showCompletedOrders">
       Show completed orders
     </b-checkbox>
-    <b-table
-      :data="orderList ? orderList : []"
-    >
+    <b-table :data="orderList ? orderList : []">
       <b-table-column field="id" label="Order ID" v-slot="props" centered>
         {{ props.row._id }}
       </b-table-column>
@@ -60,12 +58,20 @@
           {{ props.row.status }}
         </span>
       </b-table-column>
+      <b-table-column label="Actions" v-slot="props" centered>
+        <b-button
+          @click="handleDeleteOrder(props.row._id)"
+          size="is-small"
+          type="is-danger"
+          ><mdicon name="delete" size="18" /></b-button
+        >
+      </b-table-column>
     </b-table>
   </section>
 </template>
 
 <script>
-import { createOrder, getOrders } from "@/api/order";
+import { createOrder, getOrders, deleteOrder } from "@/api/order";
 export default {
   name: "CreateOrder",
   props: {
@@ -97,23 +103,22 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     showCompletedOrders(oldVal, newVal) {
-        if (!oldVal) {
-          this.fetchProcessingOrders();
-        } else this.fetchCompletedOrders();
-    }
-
+      if (!oldVal) {
+        this.fetchProcessingOrders();
+      } else this.fetchCompletedOrders();
+    },
   },
   methods: {
     fetchCompletedOrders() {
       getOrders().then((res) => {
         this.$buefy.snackbar.open("Get completed orders!");
-        this.orderList = res.data.filter(o => o.status == 4);
+        this.orderList = res.data.filter((o) => o.status == 4);
       });
     },
     fetchProcessingOrders() {
       getOrders().then((res) => {
         this.$buefy.snackbar.open("Get processing orders!");
-        this.orderList = res.data.filter(o => o.status != 4);
+        this.orderList = res.data.filter((o) => o.status != 4);
       });
     },
     handleCreateOrder() {
@@ -127,7 +132,15 @@ export default {
         this.$buefy.snackbar.open("Created order successfully!");
         if (this.showCompletedOrders) {
           this.fetchCompletedOrders();
-        } else this.fetchProcessingOrders()
+        } else this.fetchProcessingOrders();
+      });
+    },
+    handleDeleteOrder(id) {
+      deleteOrder(id).then(() => {
+        this.$buefy.toast.open(`Delete ${id}`);
+        if (this.showCompletedOrders) {
+          this.fetchCompletedOrders();
+        } else this.fetchProcessingOrders();
       });
     },
   },

@@ -22,3 +22,10 @@ export function getOrders() {
     method: "get",
   });
 }
+
+export function deleteOrder(id) {
+  return HttpService({
+    url: `/orders/${id}`,
+    method: "delete",
+  });
+}
