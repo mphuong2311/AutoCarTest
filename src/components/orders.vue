@@ -28,7 +28,7 @@
         {{ props.row._id }}
       </b-table-column>
       <b-table-column field="car" label="Car" v-slot="props" centered>
-        {{ props.row.car ? props.row.car.name : "-" }}
+        {{props.row.car._id}}
       </b-table-column>
       <b-table-column field="pickUp" label="pickUp" v-slot="props" centered>
         {{ props.row.pickUp.title }}
