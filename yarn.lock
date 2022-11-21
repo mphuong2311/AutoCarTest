@@ -1061,11 +1061,6 @@
   "resolved" "https://registry.npmjs.org/@mdi/font/-/font-7.0.96.tgz"
   "version" "7.0.96"
 
-"@mdi/js@*":
-  "integrity" "sha512-lNqhkV3cpPfYb/Avh+vXLFukUTbHbyHoFo4Jdc7Oc9UvURGVhamFIpgOVvEf2bNA78zvjXTZeVWExUTR+DLBfQ=="
-  "resolved" "https://registry.npmjs.org/@mdi/js/-/js-7.0.96.tgz"
-  "version" "7.0.96"
-
 "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1":
   "integrity" "sha512-54/JRvkLIzzDWshCWfuhadfrfZVPiElY8Fcgmg1HroEly/EDSszzhBAsarCux+D/kOslTRquNzuyGSmUSTTHGg=="
   "resolved" "https://registry.npmmirror.com/@nicolo-ribaudo/eslint-scope-5-internals/-/eslint-scope-5-internals-5.1.1-v1.tgz"
@@ -4133,13 +4128,6 @@
   "version" "3.1.0"
   dependencies:
     "semver" "^6.0.0"
-
-"mdi-vue@^3.0.13":
-  "integrity" "sha512-QHfRJZfhTA4FLqxBh4Gzxq+U+V/XQLw9l8lSIwJGMY4L+7oP+5HkAd+rsySIGfcHLEZakN3xcYpcroLZAoh0cw=="
-  "resolved" "https://registry.npmjs.org/mdi-vue/-/mdi-vue-3.0.13.tgz"
-  "version" "3.0.13"
-  dependencies:
-    "@mdi/js" "*"
 
 "mdn-data@2.0.14":
   "integrity" "sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow=="

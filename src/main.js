@@ -2,15 +2,12 @@ import Vue from "vue";
 import App from "./App.vue";
 import Buefy from "buefy";
 import "buefy/dist/buefy.css";
+import '@mdi/font/css/materialdesignicons.css'
 Vue.config.productionTip = false;
-Vue.use(Buefy);
+Vue.use(Buefy, {
+  defaultIconPack: 'mdi',
+});
 
-import mdiVue from 'mdi-vue/v2'
-import * as mdijs from '@mdi/js'
-
-Vue.use(mdiVue, {
-  icons: mdijs
-}) 
 import { LMap, LTileLayer, LMarker, LIcon, LRectangle } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";

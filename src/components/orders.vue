@@ -63,7 +63,8 @@
           @click="handleDeleteOrder(props.row._id)"
           size="is-small"
           type="is-danger"
-          ><mdicon name="delete" size="18" /></b-button
+          icon-left="delete"
+          >Delete</b-button
         >
       </b-table-column>
     </b-table>
