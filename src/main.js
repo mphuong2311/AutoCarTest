@@ -9,6 +9,8 @@ Vue.use(Buefy)
 import { LMap, LTileLayer, LMarker, LIcon, LRectangle } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
+var VueCookie = require('vue-cookie');
+Vue.use(VueCookie);
 Vue.component("l-map", LMap);
 Vue.component("l-tile-layer", LTileLayer);
 Vue.component("l-marker", LMarker);

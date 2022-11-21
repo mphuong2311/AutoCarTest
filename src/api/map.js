@@ -7,11 +7,5 @@ export function getMapById(id) {
   });
 }
 
-export function sendInfoToServer(id, data) {
-  return HttpService({
-    url: `/orders/${id}`,
-    method: "patch",
-    data
-  });
-}
+
 

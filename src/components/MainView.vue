@@ -5,18 +5,19 @@
         >Trạng thái kết nối: {{ connected ? "Connected" : "Disconnected" }}</b-tag
       >
       <b-tag type="is-primary">Trạng thái xe: {{ statusCar }}</b-tag>
-      <b-tag type="is-info"> Điểm đến: {{ nextGoal ? nextGoal.title : "-" }}</b-tag>
-      <CreateOrder :dataLocations="list" />
+      <b-tag type="is-info"> Điểm đến: {{ nextGoal ? nextGoal.title : "---" }}</b-tag>
+      <hr>
+      <OrderComponent :dataLocations="list" />
       <hr />
       <div class="columns">
         <div class="column">
-          <b-field label="Car" horizontal>
-            <b-input v-model="carName" :disabled="confirmCarAndOrder"></b-input>
+          <b-field>
+            <b-input v-model="carName" :disabled="confirmCarAndOrder" placeholder="Car ID"></b-input>
           </b-field>
         </div>
         <div class="column">
-          <b-field label="OrderId" horizontal>
-            <b-input v-model="orderId" :disabled="confirmCarAndOrder"></b-input>
+          <b-field>
+            <b-input v-model="orderId" :disabled="confirmCarAndOrder" placeholder="Order ID"></b-input>
           </b-field>
         </div>
         <div class="column">
@@ -40,7 +41,7 @@
         >{{ location.title }}</b-button
       >
       <hr />
-      <b-button @click="sendEngage()" :disabled="!confirmCarAndOrder"
+      <b-button @click="sendEngage()" :disabled="!confirmCarAndOrder || statusCar !== 'WaitingForEngage'"
         >Engage</b-button
       >
       <hr />
@@ -53,16 +54,17 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getMapById, sendInfoToServer } from "@/api/map";
+import { getMapById } from "@/api/map";
+import { updateOrder } from "@/api/order";
 import ROSLIB from "roslib";
 import MapLocation from "@/components/map.vue";
-import CreateOrder from "@/components/create-order.vue";
+import OrderComponent from "@/components/orders.vue";
 
 export default {
   name: "MainView",
   components: {
     MapLocation,
-    CreateOrder,
+    OrderComponent,
   },
   data() {
     return {
@@ -77,8 +79,8 @@ export default {
       centerMap: [0, 0],
       nextGoal: null,
       carGPS: [0, 0],
-      carName: null,
-      orderId: null,
+      carName: this.$cookie.get("carName") || null,
+      orderId: this.$cookie.get("orderId") || null,
       confirmCarAndOrder: null,
       arrivedGoalEvent: false,
     };
@@ -95,8 +97,7 @@ export default {
           car: this.carName,
           location: this.nextGoal._id,
         };
-        console.log(body);
-        sendInfoToServer(this.orderId, body).then((res) => {
+        updateOrder(this.orderId, body).then((res) => {
           console.log(res);
         });
         this.$buefy.snackbar.open("PATCH to server!");
@@ -132,12 +133,13 @@ export default {
       });
     },
     fetchData() {
-      getMapById("637afbfbade15d94e2cdbe23").then((res) => {
+      getMapById(process.env.VUE_APP_MAP_ID).then((res) => {
         this.centerMap = [res.data.center.lat, res.data.center.lng];
         this.list = res.data.locations.filter(
           (l) => l.type == "Station" && l.status == "Release"
         );
       });
+      
     },
     setTopic() {
       this.topicGoal = new ROSLIB.Topic({
@@ -167,11 +169,13 @@ export default {
     },
     setCarAndOrder() {
       this.confirmCarAndOrder = true;
-      console.log("Set car and order!");
+      this.$cookie.set("carName", this.carName);
+      this.$cookie.set("orderId", this.orderId);
+      this.$buefy.snackbar.open("Set car and order!");
     },
     editCarAndOrder() {
       this.confirmCarAndOrder = false;
-      console.log("Edit car and order!");
+      this.$buefy.snackbar.open("Edit car and order!");
     },
   },
 };
