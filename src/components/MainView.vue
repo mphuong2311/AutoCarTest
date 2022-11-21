@@ -7,17 +7,17 @@
       <b-tag type="is-primary">Trạng thái xe: {{ statusCar }}</b-tag>
       <b-tag type="is-info"> Điểm đến: {{ nextGoal ? nextGoal.title : "---" }}</b-tag>
       <hr>
-      <OrderComponent :dataLocations="list" />
+      <OrderComponent :dataLocations="list" :hasUpdate="hasUpdate"/>
       <hr />
       <div class="columns">
         <div class="column">
-          <b-field>
-            <b-input v-model="carName" :disabled="confirmCarAndOrder" placeholder="Car ID"></b-input>
+          <b-field >
+            <b-input v-model="orderId" :disabled="confirmCarAndOrder" placeholder="Order ID"></b-input>
           </b-field>
         </div>
         <div class="column">
           <b-field>
-            <b-input v-model="orderId" :disabled="confirmCarAndOrder" placeholder="Order ID"></b-input>
+            <b-input v-model="carName" :disabled="confirmCarAndOrder" placeholder="Car ID"></b-input>
           </b-field>
         </div>
         <div class="column">
@@ -83,6 +83,7 @@ export default {
       orderId: this.$cookie.get("orderId") || null,
       confirmCarAndOrder: null,
       arrivedGoalEvent: false,
+      hasUpdate: false,
     };
   },
   created() {
@@ -98,9 +99,11 @@ export default {
           location: this.nextGoal._id,
         };
         updateOrder(this.orderId, body).then((res) => {
-          console.log(res);
+          console.log(res.data);
+          this.hasUpdate = true;
+          this.$buefy.snackbar.open("PATCH to server!");
         });
-        this.$buefy.snackbar.open("PATCH to server!");
+        this.hasUpdate = false;
       }
     },
   },
@@ -134,6 +137,7 @@ export default {
     },
     fetchData() {
       getMapById(process.env.VUE_APP_MAP_ID).then((res) => {
+        this.$buefy.snackbar.open("Get map & location successfully!");
         this.centerMap = [res.data.center.lat, res.data.center.lng];
         this.list = res.data.locations.filter(
           (l) => l.type == "Station" && l.status == "Release"

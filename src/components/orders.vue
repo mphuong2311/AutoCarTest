@@ -23,12 +23,18 @@
       </b-select>
       <b-button @click="handleCreateOrder">Create order</b-button>
     </section>
-    <b-table :data="orderList ? orderList : []">
-      <b-table-column field="id" label="ID" v-slot="props" centered>
+    <br>
+    <b-checkbox v-model="showCompletedOrders">
+      Show completed orders
+    </b-checkbox>
+    <b-table
+      :data="orderList ? orderList : []"
+    >
+      <b-table-column field="id" label="Order ID" v-slot="props" centered>
         {{ props.row._id }}
       </b-table-column>
       <b-table-column field="car" label="Car" v-slot="props" centered>
-        {{props.row.car?._id || "-"}}
+        {{ props.row.car?._id || "-" }}
       </b-table-column>
       <b-table-column field="pickUp" label="pickUp" v-slot="props" centered>
         {{ props.row.pickUp.title }}
@@ -46,7 +52,8 @@
         <span
           :class="[
             'tag',
-            { 'is-danger': props.row.status != 4 },
+            { 'is-info': props.row.status === 2 },
+            { 'is-danger': props.row.status == 0 || props.row.status === 1 },
             { 'is-success': props.row.status == 4 },
           ]"
         >
@@ -66,22 +73,47 @@ export default {
       type: Array,
       default: () => [],
     },
+    hasUpdate: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       pickUp: null,
       dropOff: null,
       order: null,
-      orderList: null,
+      orderList: [],
+      showCompletedOrders: false,
     };
   },
   created() {
-    this.fetchData();
+    this.fetchProcessingOrders();
+  },
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    hasUpdate(oldVal, newVal) {
+      this.fetchProcessingOrders();
+    },
+    // eslint-disable-next-line no-unused-vars
+    showCompletedOrders(oldVal, newVal) {
+        if (!oldVal) {
+          this.fetchProcessingOrders();
+        } else this.fetchCompletedOrders();
+    }
+
   },
   methods: {
-    fetchData() {
+    fetchCompletedOrders() {
       getOrders().then((res) => {
-        this.orderList = res.data;
+        this.$buefy.snackbar.open("Get completed orders!");
+        this.orderList = res.data.filter(o => o.status == 4);
+      });
+    },
+    fetchProcessingOrders() {
+      getOrders().then((res) => {
+        this.$buefy.snackbar.open("Get processing orders!");
+        this.orderList = res.data.filter(o => o.status != 4);
       });
     },
     handleCreateOrder() {
@@ -93,7 +125,9 @@ export default {
       createOrder(data).then((res) => {
         this.order = res.data;
         this.$buefy.snackbar.open("Created order successfully!");
-        this.fetchData();
+        if (this.showCompletedOrders) {
+          this.fetchCompletedOrders();
+        } else this.fetchProcessingOrders()
       });
     },
   },
