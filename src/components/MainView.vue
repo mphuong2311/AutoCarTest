@@ -1,43 +1,53 @@
 <template>
-  <div>
-    <MapLocation :list="list" :centerMap="centerMap" :carGPS="carGPS" />
-    <br />
-    <b-tag :type="connected ? 'is-success' : 'is-danger'"
-      >ROS: {{ connected ? "Connected" : "Disconnected" }}</b-tag
-    >
-    <span> - </span>
-    <b-tag type="is-info">{{ nextGoal ? nextGoal.title : "-" }}</b-tag>
-    <span> - </span>
-    <b-tag type="is-primary">Status: {{ statusCar }}</b-tag>
-    <hr />
-    <div class="columns">
-      <div class="column">
-        <b-field label="Car" horizontal>
-          <b-input v-model="carName" :disabled="confirmCarAndOrder"></b-input>
-        </b-field>
+  <div class="columns">
+    <div class="column">
+      <b-tag :type="connected ? 'is-success' : 'is-danger'"
+        >Trạng thái kết nối: {{ connected ? "Connected" : "Disconnected" }}</b-tag
+      >
+      <b-tag type="is-primary">Trạng thái xe: {{ statusCar }}</b-tag>
+      <b-tag type="is-info"> Điểm đến: {{ nextGoal ? nextGoal.title : "-" }}</b-tag>
+      <CreateOrder :dataLocations="list" />
+      <hr />
+      <div class="columns">
+        <div class="column">
+          <b-field label="Car" horizontal>
+            <b-input v-model="carName" :disabled="confirmCarAndOrder"></b-input>
+          </b-field>
+        </div>
+        <div class="column">
+          <b-field label="OrderId" horizontal>
+            <b-input v-model="orderId" :disabled="confirmCarAndOrder"></b-input>
+          </b-field>
+        </div>
+        <div class="column">
+          <b-button @click="setCarAndOrder" :disabled="confirmCarAndOrder"
+            >Set</b-button
+          >
+          <b-button
+            @click="editCarAndOrder"
+            :disabled="!confirmCarAndOrder || statusCar !== 'WaitingForRoute'"
+            >Edit</b-button
+          >
+        </div>
       </div>
-      <div class="column">
-        <b-field label="OrderId" horizontal>
-          <b-input v-model="orderId" :disabled="confirmCarAndOrder"></b-input>
-        </b-field>
-      </div>
-      <div class="column">
-        <b-button @click="setCarAndOrder" :disabled="confirmCarAndOrder">Set</b-button>
-        <b-button @click="editCarAndOrder" :disabled="!confirmCarAndOrder || statusCar !== 'WaitingForRoute'">Edit</b-button>
-      </div>
-    </div>
 
-    <hr />
-    <b-button
-      :disabled="!confirmCarAndOrder"
-      v-for="location in list"
-      :key="location._id"
-      @click="sendGoal(location)"
-      >{{ location.title }}</b-button
-    >
-    <hr />
-    <b-button @click="sendEngage()" :disabled="!confirmCarAndOrder">Engage</b-button>
-    <hr />
+      <hr />
+      <b-button
+        :disabled="!confirmCarAndOrder"
+        v-for="location in list"
+        :key="location._id"
+        @click="sendGoal(location)"
+        >{{ location.title }}</b-button
+      >
+      <hr />
+      <b-button @click="sendEngage()" :disabled="!confirmCarAndOrder"
+        >Engage</b-button
+      >
+      <hr />
+    </div>
+    <div class="column">
+      <MapLocation :list="list" :centerMap="centerMap" :carGPS="carGPS" />
+    </div>
   </div>
 </template>
 
@@ -46,11 +56,13 @@
 import { getMapById, sendInfoToServer } from "@/api/map";
 import ROSLIB from "roslib";
 import MapLocation from "@/components/map.vue";
+import CreateOrder from "@/components/create-order.vue";
 
 export default {
   name: "MainView",
   components: {
     MapLocation,
+    CreateOrder,
   },
   data() {
     return {
@@ -81,12 +93,12 @@ export default {
       if (oldVal) {
         let body = {
           car: this.carName,
-          location: this.nextGoal._id
-        }
+          location: this.nextGoal._id,
+        };
         console.log(body);
-        sendInfoToServer(this.orderId, body).then(res => {
+        sendInfoToServer(this.orderId, body).then((res) => {
           console.log(res);
-        })
+        });
         this.$buefy.snackbar.open("PATCH to server!");
       }
     },
@@ -120,7 +132,7 @@ export default {
       });
     },
     fetchData() {
-      getMapById("6286f72e52fc0b740e32b83a").then((res) => {
+      getMapById("637afbfbade15d94e2cdbe23").then((res) => {
         this.centerMap = [res.data.center.lat, res.data.center.lng];
         this.list = res.data.locations.filter(
           (l) => l.type == "Station" && l.status == "Release"

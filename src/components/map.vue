@@ -87,7 +87,7 @@ import CarIcon from "@/icons/Car.vue";
     padding: 4px;
   }
   .map {
-    height: 500px;
+    height: 80vh;
     border-radius: 6px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   }
