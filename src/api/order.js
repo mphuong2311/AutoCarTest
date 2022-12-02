@@ -2,7 +2,7 @@ import HttpService from "@/utils/HttpService";
 
 export function updateOrder(id, data) {
   return HttpService({
-    url: `/orders/app/${id}`,
+    url: `/orders/${id}`,
     method: "patch",
     data,
   });

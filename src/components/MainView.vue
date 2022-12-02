@@ -2,22 +2,33 @@
   <div class="columns">
     <div class="column">
       <b-tag :type="connected ? 'is-success' : 'is-danger'"
-        >Trạng thái kết nối: {{ connected ? "Connected" : "Disconnected" }}</b-tag
+        >Trạng thái kết nối:
+        {{ connected ? "Connected" : "Disconnected" }}</b-tag
       >
       <b-tag type="is-primary">Trạng thái xe: {{ statusCar }}</b-tag>
-      <b-tag type="is-info"> Điểm đến: {{ nextGoal ? nextGoal.title : "---" }}</b-tag>
-      <hr>
-      <OrderComponent :dataLocations="list" :hasUpdate="hasUpdate"/>
+      <b-tag type="is-info">
+        Điểm đến: {{ nextGoal ? nextGoal.title : "---" }}</b-tag
+      >
+      <hr />
+      <OrderComponent :dataLocations="list" :hasUpdate="hasUpdate" />
       <hr />
       <div class="columns">
         <div class="column">
-          <b-field >
-            <b-input v-model="orderId" :disabled="confirmCarAndOrder" placeholder="Order ID"></b-input>
+          <b-field>
+            <b-input
+              v-model="orderId"
+              :disabled="confirmCarAndOrder"
+              placeholder="Order ID"
+            ></b-input>
           </b-field>
         </div>
         <div class="column">
           <b-field>
-            <b-input v-model="carName" :disabled="confirmCarAndOrder" placeholder="Car ID"></b-input>
+            <b-input
+              v-model="carName"
+              :disabled="confirmCarAndOrder"
+              placeholder="Car ID"
+            ></b-input>
           </b-field>
         </div>
         <div class="column">
@@ -41,7 +52,9 @@
         >{{ location.title }}</b-button
       >
       <hr />
-      <b-button @click="sendEngage()" :disabled="!confirmCarAndOrder || statusCar !== 'WaitingForEngage'"
+      <b-button
+        @click="sendEngage()"
+        :disabled="!confirmCarAndOrder || statusCar !== 'WaitingForEngage'"
         >Engage</b-button
       >
       <hr />
@@ -89,6 +102,12 @@ export default {
   created() {
     this.fetchData();
     this.connectRos();
+  },
+  sockets: {
+    connect: function () {
+      console.log("socket connected");
+    },
+    
   },
   watch: {
     // eslint-disable-next-line no-unused-vars
@@ -143,7 +162,6 @@ export default {
           (l) => l.type == "Station" && l.status == "Release"
         );
       });
-      
     },
     setTopic() {
       this.topicGoal = new ROSLIB.Topic({

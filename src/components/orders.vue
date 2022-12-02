@@ -109,6 +109,17 @@ export default {
       } else this.fetchCompletedOrders();
     },
   },
+  sockets: {
+    decline_order: function () {
+      console.log("Don hang bi tu choi!");
+      this.fetchProcessingOrders()
+    },
+    accept_order(order) {
+      console.log(order);
+      console.log("Co don hang moi!");
+      this.fetchProcessingOrders()
+    }
+  },  
   methods: {
     fetchCompletedOrders() {
       getOrders().then((res) => {
@@ -129,6 +140,7 @@ export default {
         dropOff: this.dropOff,
       };
       createOrder(data).then((res) => {
+        this.$socket.emit("track_order", res.data._id);
         this.order = res.data;
         this.$buefy.snackbar.open("Created order successfully!");
         if (this.showCompletedOrders) {

@@ -8,6 +8,7 @@ Vue.use(Buefy, {
   defaultIconPack: 'mdi',
 });
 
+/* VUE-LEAFLET */
 import { LMap, LTileLayer, LMarker, LIcon, LRectangle } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
@@ -24,6 +25,11 @@ Icon.Default.mergeOptions({
   iconUrl: require("leaflet/dist/images/marker-icon.png"),
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
+
+/* VUE-SOCKET.IO */
+import { WS_CONFIG } from "@/constants/socket";
+import VueSocketIO from "vue-socket.io";
+Vue.use(new VueSocketIO(WS_CONFIG));
 
 new Vue({
   render: (h) => h(App),
